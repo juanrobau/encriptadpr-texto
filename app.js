@@ -22,58 +22,56 @@ const llaves = [
 
 
  function validarTexto(texto) {
-    let letrasMayusculas = /[A-Z]/; 
-    let caracteres = /[^a-z0-9 ]/; 
-    
-    if (letrasMayusculas.test(texto) || caracteres.test(texto)) {
-        alert("No se permiten caracteres especiales ni mayúsculas");
-        return true;
-    }
-    
+    let caracteres = /^[a-z\s]*$/
+        
     if (texto.trim() === "") {
-        alert("Ingrese un mensaje para encriptar");
-        return true;
+        alert("Ingrese un mensaje para encriptar o desencriptar");
+        return false;
     }
+    if (!caracteres.test(texto)) {
+        alert("No se permiten caracteres especiales ni mayúsculas");
+        return false;
+    }
+
     
-    return false;
+    return true;
 
     
 }
 
  function encriptarMensaje(mensaje){
     if(validarTexto(mensaje)){
-        
-    }
-    let mensajeEncriptado = "";
-    for(let i = 0; i < mensaje.length; i++){     
-        let letra = mensaje[i];
-        let encriptada = letra;
-        for(let j = 0; j < llaves.length; j++){
-            if(letra == llaves[j][0]){
-                encriptada = llaves[j][1];
-                //reemplaza la letra porsu equivalente encriptado
-                break;//term el buclcuando se cumpla la correspondencia.
+        let mensajeEncriptado = "";
+        for(let i = 0; i < mensaje.length; i++){     
+            let letra = mensaje[i];
+            let encriptada = letra;
+            for(let j = 0; j < llaves.length; j++){
+                if(letra == llaves[j][0]){
+                    encriptada = llaves[j][1];
+                    //reemplaza la letra porsu equivalente encriptado
+                    break;//term el buclcuando se cumpla la correspondencia.
+                }
+    
             }
-
+    
+            mensajeEncriptado += encriptada;
         }
-
-        mensajeEncriptado += encriptada;
+        
+        return mensajeEncriptado;
     }
-    
-    return mensajeEncriptado;
-    
-    
-
  }
 
 
  function desencriptarMensaje(mensaje){
-    let mensajeDesencriptado = mensaje;
-    for(let i = 0; i < llaves.length; i++){
-        let regex = new RegExp(llaves[i][1], 'g') 
-        mensajeDesencriptado = mensajeDesencriptado.replace(regex,llaves[i][0]);
+    if(validarTexto(mensaje)){
+        let mensajeDesencriptado = mensaje;
+        for(let i = 0; i < llaves.length; i++){
+            let regex = new RegExp(llaves[i][1], 'g') 
+            mensajeDesencriptado = mensajeDesencriptado.replace(regex,llaves[i][0]);
+        }
+        return mensajeDesencriptado;
     }
-    return mensajeDesencriptado;
+   
  }
 //ocultar elementos dinamicamente
 textArea.addEventListener("input",(e)=>{
@@ -87,7 +85,7 @@ textArea.addEventListener("input",(e)=>{
  //funcion del boton encriptar
 botonEncriptar.addEventListener("click",(e)=>{
     e.preventDefault();
-    let mensaje = textArea.value.toLowerCase();
+    let mensaje = textArea.value;
     let mensajeEncriptado = encriptarMensaje(mensaje);
     resultadoTexto.textContent = mensajeEncriptado;
     botonCopiar.classList.remove("hidden");
@@ -97,7 +95,7 @@ botonEncriptar.addEventListener("click",(e)=>{
 
 botonDesencriptar.addEventListener("click",(e)=>{
     e.preventDefault();
-    let mensaje = textArea.value.toLowerCase();
+    let mensaje = textArea.value;
     let mensajeDesencriptado = desencriptarMensaje(mensaje);
     resultadoTexto.textContent = mensajeDesencriptado;
     resultadoTitulo.textContent = "el resultado es";
